@@ -30,10 +30,11 @@ const mongoose = require("mongoose");
 // app.use(limiter)
 
 // Connect DB
-const URI = "mongodb://127.0.0.1:27017/EcommercMERN";
+// const URI = "mongodb://127.0.0.1:27017/EcommercMERN";
+const URI = "mongodb+srv://cluster0.tu9cngr.mongodb.net/EcommercMERN";
 const options = {
-  user: "",
-  pass: "",
+  user: "nsakib",
+  pass: "nsakib123",
   autoIndex: true
 };
 const connectDB = async () => {
