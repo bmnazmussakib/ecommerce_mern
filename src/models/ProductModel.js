@@ -11,8 +11,8 @@ const DataSchema = mongoose.Schema(
     star: { type: String, required: true },
     stock: { type: Boolean, required: true },
     remark: { type: String, required: true },
-    categoryId: { type: mongoose.Schema.Type.ObjectId, required: true },
-    brandId: { type: mongoose.Schema.Type.ObjectId, required: true },
+    categoryId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    brandId: { type: mongoose.Schema.Types.ObjectId, required: true },
   },
   {
     timestamps: true,

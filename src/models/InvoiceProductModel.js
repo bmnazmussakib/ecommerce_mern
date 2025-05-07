@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const DataSchema = mongoose.Schema(
   {
     
-      userId: { type: mongoose.Schema.Type.ObjectId, required: true },
-      invoiceId: { type: mongoose.Schema.Type.ObjectId, required: true },
-      productId: { type: mongoose.Schema.Type.ObjectId, required: true },
+      userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+      invoiceId: { type: mongoose.Schema.Types.ObjectId, required: true },
+      productId: { type: mongoose.Schema.Types.ObjectId, required: true },
       qty: { type: String, required: true },
       price: { type: String, required: true },
       color: { type: String, required: true },

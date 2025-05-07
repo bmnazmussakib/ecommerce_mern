@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const DataSchema = mongoose.Schema(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    des: { type: String, required: true },
     price: { type: String, required: true },
     image: { type: String, required: true },
-    productId: { type: mongoose.Schema.Type.ObjectId, required: true }
+    productID: { type: mongoose.Schema.Types.ObjectId, required: true }
   },
   {
     timestamps: true,
@@ -14,5 +14,5 @@ const DataSchema = mongoose.Schema(
   }
 );
 
-const ProductSliderModel = mongoose.model("productSliders", DataSchema);
+const ProductSliderModel = mongoose.model("productsliders", DataSchema);
 module.exports = ProductSliderModel;
