@@ -1,103 +1,253 @@
-const BrandModel = require('../models/BrandModel')
-const CategoryModel = require('../models/CategoryModel')
-const ProductModel = require('../models/ProductModel')
-const ProductDetailModel = require('../models/ProductDetailModel')
-const ProductSliderModel = require('../models/ProductSliderModel')
-const ReviewModel = require('../models/ReviewModel')
-const mongoose = require('mongoose')
-const ObjectId = mongoose.Types.ObjectId
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
+const BrandModel = require('../models/BrandModel');
+const CategoryModel = require('../models/CategoryModel');
+const ProductModel = require('../models/ProductModel');
+const ProductDetailModel = require('../models/ProductDetailModel');
+const ProductSliderModel = require('../models/ProductSliderModel');
+const ReviewModel = require('../models/ReviewModel');
 
+// Get all brands
 const ProductBrandListService = async () => {
     try {
-        const data = await BrandModel.find({})
-        return { status: "success", data: data }
+        const data = await BrandModel.find({});
+        return { status: "success", data: data };
     } catch (error) {
-        return { status: "failed", data: error }
+        return { status: "failed", data: error };
     }
-}
+};
+
+// Get all categories
 const ProductCategoryListService = async () => {
     try {
-        const data = await CategoryModel.find({})
-        return { status: "success", data: data }
+        const data = await CategoryModel.find({});
+        return { status: "success", data: data };
     } catch (error) {
-        return { status: "failed", data: error }
+        return { status: "failed", data: error };
     }
-}
+};
+
+// Get all products
+const ProductListService = async () => {
+    try {
+        const data = await ProductModel.find({});
+        return { status: "success", data: data };
+    } catch (error) {
+        return { status: "failed", data: error };
+    }
+};
+
+// Get all product sliders
 const ProductSliderListService = async () => {
     try {
-        const data = await ProductSliderModel.find({})
-        return { status: "success", data: data }
+        const data = await ProductSliderModel.find({});
+        return { status: "success", data: data };
     } catch (error) {
-        return { status: "failed", data: error }
+        return { status: "failed", data: error };
     }
-}
+};
+
+// Get products by brand
 const ProductListByBrandService = async (req) => {
-    
     try {
-        const BrandID = new ObjectId(req.params.BrandID);
+        const BrandID = new mongoose.Types.ObjectId(req.params.BrandID);
 
         const MatchStage = {
-            $match: {
-                brandId: BrandID
-            }
-        }
+            $match: { brandID: BrandID }
+        };
 
         const JoinWithBrandStage = {
             $lookup: {
-                from:'brands',
-                localField: 'brandId',
+                from: 'brands',
+                localField: 'brandID',
                 foreignField: '_id',
-                as: 'brands'
+                as: 'brand'
+            }
+        };
+
+        // Uncomment if category join is needed
+        const JoinWithCategoryStage = {
+            $lookup: {
+                from: 'categories',
+                localField: 'categoryID',
+                foreignField: '_id',
+                as: 'category'
+            }
+        };
+
+        const UnwindBrandStage = {
+            $unwind: {
+                path: '$brand',
+                // preserveNullAndEmptyArrays: true
             }
         }
 
-        // const JoinWithCategoryStage = {
-        //     $lookup: {
-        //         from: 'categories',
-        //         localField: 'categoryId',
-        //         foreignField: '_id',
-        //         as: 'categories'
-        //     }
-        // }
+        const UnwindCategoryStage = {
+            $unwind: {
+                path: '$category',
+                // preserveNullAndEmptyArrays: true
+            }
+        }
 
-        // const data  = await ProductModel.aggregate([
-        //     MatchStage,
-        //     JoinWithBrandStage,
-        //     JoinWithCategoryStage
-        // ])
+        const ProjectoinStage = { $project: { 'brand._id': 0, 'category._id': 0, 'categoryID': 0, 'brandID': 0 } };
 
-        // const data  = await BrandModel.find({ _id: req.params.BrandID })
-        const data  = await ProductModel.find({ brandId: BrandID })
 
-        return { status: "success", data: data }
+        const data = await ProductModel.aggregate([
+            MatchStage,
+            JoinWithBrandStage,
+            JoinWithCategoryStage,
+            UnwindBrandStage,
+            UnwindCategoryStage,
+            ProjectoinStage
+        ]);
+
+        // const data = await ProductModel.find({ brandID: BrandID });
+        console.log(BrandID)
+        return { status: "success", data: data };
     } catch (error) {
-        return { status: "failed", data: error }
+        return { status: "failed", data: error };
     }
+};
 
-}
-const ProductListByCategoryService = async () => {
+// Placeholder: Get products by category
+const ProductListByCategoryService = async (req) => {
+    try {
+        const CategotyID = new mongoose.Types.ObjectId(req.params.CategoryID);
 
-}
+        const MatchStage = { $match: { categoryID: CategotyID } }
+        const JoinWithCategoryStage = {
+            $lookup: {
+                from: 'categories',
+                localField: 'categoryID',
+                foreignField: '_id',
+                as: 'category'
+            }
+        }
+        const JoinWithBrandStage = {
+            $lookup: {
+                from: 'brands',
+                localField: 'brandID',
+                foreignField: '_id',
+                as: 'brand'
+            }
+        }
+
+        const UnwindBrandStage = {
+            $unwind: {
+                path: '$brand',
+                // preserveNullAndEmptyArrays: true
+            }
+        }
+
+        const UnwindCategoryStage = {
+            $unwind: {
+                path: '$category',
+                // preserveNullAndEmptyArrays: true
+            }
+        }
+
+        const ProjectoinStage = { $project: { 'brand._id': 0, 'category._id': 0, 'categoryID': 0, 'brandID': 0 } };
+
+
+        const data = await ProductModel.aggregate([
+            MatchStage,
+            JoinWithCategoryStage,
+            JoinWithBrandStage,
+            UnwindBrandStage,
+            UnwindCategoryStage,
+            ProjectoinStage
+        ])
+        return { status: 'success', data: data }
+    } catch (error) {
+        return { status: "failed", data: error };
+
+    }
+};
+
+// Placeholder: Get products by remark
+const ProductListByRemarkService = async (req) => {
+    try {
+        const Remark = req.params.Remark;
+
+        const MatchStage = {$match: {remark: Remark}}
+        const JoinWithCategoryStage = {
+            $lookup: {
+                from: 'categories',
+                localField: 'categoryID',
+                foreignField: '_id',
+                as: 'category'
+            }
+        }
+        const JoinWithBrandStage = {
+            $lookup: {
+                from: 'brands',
+                localField: 'brandID',
+                foreignField: '_id',
+                as: 'brand'
+            }
+        }
+
+        const UnwindBrandStage = {
+            $unwind: {
+                path: '$brand',
+                // preserveNullAndEmptyArrays: true
+            }
+        }
+
+        const UnwindCategoryStage = {
+            $unwind: {
+                path: '$category',
+                // preserveNullAndEmptyArrays: true
+            }
+        }
+
+        const ProjectoinStage = { $project: { 'brand._id': 0, 'category._id': 0, 'categoryID': 0, 'brandID': 0 } };
+
+
+        const data = await ProductModel.aggregate([
+            MatchStage,
+            JoinWithCategoryStage,
+            JoinWithBrandStage,
+            UnwindBrandStage,
+            UnwindCategoryStage,
+            ProjectoinStage
+        ])
+
+
+        return { status: "success", data: data };
+    } catch (error) {
+        return { status: "failed", data: error };
+
+    }
+};
+
+// Placeholder: Get similar products
 const ProductListBySimilarService = async () => {
 
-}
+};
+
+// Placeholder: Get products by keyword
 const ProductListByKeywordService = async () => {
 
-}
-const ProductListByRemarkService = async () => {
+};
 
-}
+
+
+// Placeholder: Get product details
 const ProductDetailsService = async () => {
 
-}
+};
+
+// Placeholder: Get product reviews
 const ProductReviewListService = async () => {
 
-}
+};
 
 module.exports = {
     ProductBrandListService,
     ProductCategoryListService,
+    ProductListService,
     ProductSliderListService,
     ProductListByBrandService,
     ProductListByCategoryService,
@@ -106,4 +256,4 @@ module.exports = {
     ProductListByRemarkService,
     ProductDetailsService,
     ProductReviewListService
-}
+};
