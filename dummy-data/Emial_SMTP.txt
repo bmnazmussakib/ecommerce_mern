@@ -1,5 +1,19 @@
+Nazmus Sakib
+===================================================
+host: "bmnazmussakib.com",
+port: 465,
+secure: false,
+auth: {user: "contact@bmnazmussakib.com", pass: 'contact123456789'},
+tls: {rejectUnauthorized: false},
+
+
+
+
+Rabbil Hasan
+===================================================
 host: "mail.teamrabbil.com",
 port: 25,
 secure: false,
 auth: {user: "info@teamrabbil.com", pass: '~sR4[bhaC[Qs'},
 tls: {rejectUnauthorized: false},
+

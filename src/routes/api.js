@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const HelloController = require('../controllers/HelloController')
 const ProductController = require('../controllers/ProductController')
+const UserController = require('../controllers/UserController')
 
 
 //  This is my first routing
@@ -23,5 +24,9 @@ router.get('/ProductListBySimilar/:CategoryID', ProductController.ProductListByS
 router.get('/ProductListByKeyword/:Keyword', ProductController.ProductListByKeyword)
 router.get('/ProductDetails/:ProductID', ProductController.ProductDetails)
 router.get('/ProductReviewList/:ProductID', ProductController.ProductReviewList)
+
+
+// User
+router.get('/UserOTP/:email', UserController.UserOTP)
 
 module.exports = router;
