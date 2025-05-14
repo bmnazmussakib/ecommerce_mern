@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 exports.EncodeToken = async (email, user_id) => {
     try {
-        const KEY = 'ABC-123_XYZ'
+        const KEY = 'ABC-123-XYZ'
         const EXP = {expiresIn: '24h'}
         const PAYLOAD = {
             email: email,
@@ -16,7 +16,7 @@ exports.EncodeToken = async (email, user_id) => {
 
 exports.DecodeToken = async (token) => {
     try {
-        const KEY = 'ABC-123_XYZ'
+        const KEY = 'ABC-123-XYZ'
         const decoded = await jwt.verify(token, KEY)
         return decoded
     } catch (error) {

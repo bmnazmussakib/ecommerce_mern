@@ -1,5 +1,6 @@
 const UserModel = require("../models/UserModel");
 const { sendEmail } = require("../utility/EmailHelper");
+const { EncodeToken } = require("../utility/TokenHelper");
 
 const UserOTPService = async (req) => {
     try {
@@ -16,19 +17,88 @@ const UserOTPService = async (req) => {
             data: data,
         };
     } catch (error) {
-        return { status: "6 Digit OTP has been sent failed",
-            data: error,}
+        return {
+            status: "6 Digit OTP has been sent failed",
+            data: error,
+        }
     }
 }
-const VerifyLoginService = async () => { }
-const UserLogoutService = async () => { }
-const CreateProfileService = async () => { }
+const VerifyOTPService = async (req) => {
+    try {
+        const { email, otp } = req.params;
+
+        // User Count
+        const total = await UserModel.countDocuments({ email: email, otp: otp });
+        // const total = await UserModel.aggregate([
+        //     { $match: { email, otp } },
+        //     { $count: 'total' }
+        //   ]);
+
+        if (total === 1) {
+
+            // Read User Data
+            const data = await UserModel.findOne({ email: email, otp: otp }).select('_id')
+
+            // Create Token
+            const Token = await EncodeToken(data.email, data._id.toString());
+
+            // Update User Data
+            await UserModel.findOneAndUpdate({ email: email }, { otp: '0' }, { new: true });
+
+
+            return {
+                status: "success",
+                message: "otp verification successful",
+                token: Token,
+            };
+        } else {
+            return { status: "failed", message: "invalid otp" }
+        }
+
+
+    } catch (error) {
+        return { status: "OTP verification failed", data: error }
+
+    }
+}
+const UserLogoutService = async (req) => {
+    try {
+
+        // const email = req.headers.email;
+        // const user_id = req.headers.user_id;
+
+        return {
+            status: "success",
+            data: "email"
+        }
+    } catch (error) {
+        return {
+            status: "logout failed",
+            data: error
+        }
+    }
+}
+
+const CreateProfileService = async (req) => {
+    try {
+        // const headerData = req.headers;
+        return {
+            status: "success",
+            data: "headerData"
+        }
+    } catch (error) {
+        return {
+            status: "failed",
+            data: error
+        }
+    }
+}
 const UpdateProfileService = async () => { }
 const ReadProfileService = async () => { }
 
 module.exports = {
     UserOTPService,
-    VerifyLoginService,
+    VerifyOTPService,
     UserLogoutService,
     CreateProfileService,
     UpdateProfileService,

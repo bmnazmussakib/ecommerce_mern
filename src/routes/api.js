@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const HelloController = require('../controllers/HelloController')
 const ProductController = require('../controllers/ProductController')
-const UserController = require('../controllers/UserController')
+const UserController = require('../controllers/UserController');
+const AuthVerification = require('../middleware/AuthVerification');
 
 
 //  This is my first routing
@@ -28,5 +29,11 @@ router.get('/ProductReviewList/:ProductID', ProductController.ProductReviewList)
 
 // User
 router.get('/UserOTP/:email', UserController.UserOTP)
+router.get('/VerifyOTP/:email/:otp', UserController.VerifyOTP)
+router.get('/UserLogout', AuthVerification ,UserController.UserLogout)
+
+// Profile
+router.post('/CreateProfile', AuthVerification ,UserController.CreateProfile)
+router.post('/UpdateProfile', AuthVerification ,UserController.UpdateProfile)
 
 module.exports = router;
