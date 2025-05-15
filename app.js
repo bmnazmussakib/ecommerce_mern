@@ -9,6 +9,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 const hpp = require("hpp");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 // Security Middleware Implementation
 // app.use(cors())
@@ -16,6 +17,9 @@ const mongoose = require("mongoose");
 // app.use(helmet())
 // app.use(hpp())
 // app.use(mongoSanitize())
+app.use(cookieParser())
+app.use(express.json())
+
 
 // Request Rate Limiting
 // const limiter = rateLimit({

@@ -3,6 +3,7 @@ const router = express.Router();
 const HelloController = require('../controllers/HelloController')
 const ProductController = require('../controllers/ProductController')
 const UserController = require('../controllers/UserController');
+const WishController = require('../controllers/WishlistController');
 const AuthVerification = require('../middleware/AuthVerification');
 
 
@@ -12,7 +13,7 @@ router.get('/hello', HelloController.Hello)
 
 
 // Products Routes
-router.get('/ProductBrandList', ProductController.ProductBrandList)
+router.get('/ProductBrandList', AuthVerification , ProductController.ProductBrandList)
 router.get('/ProductCategoryList', ProductController.ProductCategoryList)
 router.get('/ProductList', ProductController.ProductList)
 router.get('/ProductSliderList', ProductController.ProductSliderList)
@@ -33,7 +34,19 @@ router.get('/VerifyOTP/:email/:otp', UserController.VerifyOTP)
 router.get('/UserLogout', AuthVerification ,UserController.UserLogout)
 
 // Profile
-router.post('/CreateProfile', AuthVerification ,UserController.CreateProfile)
-router.post('/UpdateProfile', AuthVerification ,UserController.UpdateProfile)
+router.post('/CreateProfile', AuthVerification ,UserController.SaveProfile)
+router.post('/UpdateProfile', AuthVerification ,UserController.SaveProfile)
+router.get('/ReadProfile', AuthVerification ,UserController.ReadProfile)
+
+// Wish
+router.post('/SaveWishList', AuthVerification ,WishController.SaveWishList)
+
+
+
+
+router.get("/protected", AuthVerification, (req, res) => {
+    res.json({ message: "You are authorized", user: req.user });
+});
+
 
 module.exports = router;
