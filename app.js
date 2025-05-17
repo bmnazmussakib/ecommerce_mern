@@ -36,10 +36,15 @@ app.use(express.json())
 // Connect DB
 // const URI = "mongodb://127.0.0.1:27017/EcommercMERN";
 const URI = "mongodb+srv://cluster0.tu9cngr.mongodb.net/EcommercMERN";
+
+// const URI = "mongodb://194.233.71.52:27017/EcommercMERN?authSource=admin";
+
 const options = {
-  user: "nsakib",
-  pass: "nsakib123",
-  autoIndex: true
+  user: "nsakib", // No Need for 194.233.71.52:27017
+  pass: "nsakib123", // No Need for 194.233.71.52:27017
+  autoIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 };
 const connectDB = async () => {
   try {
@@ -47,6 +52,7 @@ const connectDB = async () => {
     console.log("Database Connected Successfully")
   } catch (error) {
     console.log("Database Connection Failed")
+    // console.error(error);
 
   }
 };

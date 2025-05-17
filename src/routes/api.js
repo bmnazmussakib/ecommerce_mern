@@ -4,6 +4,7 @@ const HelloController = require('../controllers/HelloController')
 const ProductController = require('../controllers/ProductController')
 const UserController = require('../controllers/UserController');
 const WishController = require('../controllers/WishlistController');
+const CartController = require('../controllers/CartController');
 const AuthVerification = require('../middleware/AuthVerification');
 
 
@@ -39,7 +40,15 @@ router.post('/UpdateProfile', AuthVerification ,UserController.SaveProfile)
 router.get('/ReadProfile', AuthVerification ,UserController.ReadProfile)
 
 // Wish
+router.get('/WishList', AuthVerification ,WishController.WishList)
 router.post('/SaveWishList', AuthVerification ,WishController.SaveWishList)
+router.delete('/RemoveWishList', AuthVerification ,WishController.RemoveWishList)
+
+// Cart
+router.get('/CartList', AuthVerification ,CartController.CartList)
+router.post('/SaveCartList', AuthVerification ,CartController.SaveCartList)
+router.put('/UpdateCartList/:cartID', AuthVerification ,CartController.UpdateCartList)
+router.delete('/RemoveCartList', AuthVerification ,CartController.RemoveCartList)
 
 
 

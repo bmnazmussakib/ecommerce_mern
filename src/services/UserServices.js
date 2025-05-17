@@ -85,11 +85,11 @@ const UserLogoutService = async (req) => {
 
 const SaveProfileService = async (req) => {
     try {
-        const {email, user_id} = req.headers;
+        const { email, user_id } = req.headers;
         const reqBody = req.body;
         reqBody.userID = user_id;
 
-        const data = await ProfileModel.findOneAndUpdate({userID: user_id}, reqBody, {upsert: true}, {new: true});
+        const data = await ProfileModel.findOneAndUpdate({ userID: user_id }, reqBody, { upsert: true }, { new: true });
 
         return {
             status: "profile save success",
@@ -105,11 +105,11 @@ const SaveProfileService = async (req) => {
 
 const CreateProfileService = async (req) => {
     try {
-        const {email, user_id} = req.headers;
+        const { email, user_id } = req.headers;
         const reqBody = req.body;
         reqBody.userID = user_id;
 
-        const data = await ProfileModel.findOneAndUpdate({userID: user_id}, reqBody, {upsert: true}, {new: true});
+        const data = await ProfileModel.findOneAndUpdate({ userID: user_id }, reqBody, { upsert: true }, { new: true });
 
         return {
             status: "success",
@@ -123,13 +123,13 @@ const CreateProfileService = async (req) => {
     }
 }
 
-const UpdateProfileService = async () => { 
+const UpdateProfileService = async () => {
     try {
-        const {email, user_id} = req.headers;
+        const { email, user_id } = req.headers;
         const reqBody = req.body;
         reqBody.userID = user_id;
 
-        const data = await ProfileModel.findOneAndUpdate({userID: user_id}, reqBody, {upsert: true}, {new: true});
+        const data = await ProfileModel.findOneAndUpdate({ userID: user_id }, reqBody, { upsert: true }, { new: true });
 
         return {
             status: "success",
@@ -141,22 +141,23 @@ const UpdateProfileService = async () => {
             data: error
         }
     }
- }
-const ReadProfileService = async (req) => { 
+}
+
+const ReadProfileService = async (req) => {
     try {
-        const  {email, user_id} = req.headers;
-        const data = await ProfileModel.findOne({userID: user_id});
+        const { email, user_id } = req.headers;
+        const data = await ProfileModel.findOne({ userID: user_id });
         return {
             status: "success",
             data: data
         }
     } catch (error) {
-            return {
-                status: "failed",
-                data: error
-            }
+        return {
+            status: "failed",
+            data: error
+        }
     }
- }
+}
 
 module.exports = {
     UserOTPService,
