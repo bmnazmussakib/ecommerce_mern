@@ -14,27 +14,29 @@ exports.CreateInvoice = async (req, res) => {
     return res.status(200).json(result)
 }
 
+exports.PaymentSuccess = async (req, res) => {
+    const result = await PaymentSuccessService(req)
+    return res.status(200).json(result)
+    // return res.redirect('localhost:5173/profile')
+}
+
 
 exports.PaymentFail = async (req, res) => {
     const result = await PaymentFailService(req)
     return res.status(200).json(result)
+    // return res.redirect('localhost:5173/profile')
 }
 
 
 exports.PaymentCancel = async (req, res) => {
     const result = await PaymentCancelService(req)
     return res.status(200).json(result)
+    // return res.redirect('localhost:5173/profile')
 }
 
 
 exports.PaymentIPN = async (req, res) => {
     const result = await PaymentIPNService(req)
-    return res.status(200).json(result)
-}
-
-
-exports.PaymentSuccess = async (req, res) => {
-    const result = await PaymentSuccessService(req)
     return res.status(200).json(result)
 }
 
