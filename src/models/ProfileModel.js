@@ -11,6 +11,7 @@ const DataSchema = mongoose.Schema(
     cus_phone: { type: String, required: true },
     cus_postCode: { type: String, required: true },
     cus_state: { type: String, required: true },
+    
     ship_add: { type: String, required: true },
     ship_city: { type: String, required: true },
     ship_country: { type: String, required: true },
