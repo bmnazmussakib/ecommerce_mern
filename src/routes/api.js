@@ -6,6 +6,7 @@ const UserController = require('../controllers/UserController');
 const WishController = require('../controllers/WishlistController');
 const CartController = require('../controllers/CartController');
 const InvoiceController = require('../controllers/InvoiceController');
+const FeaturesController = require('../controllers/FeaturesController');
 const AuthVerification = require('../middleware/AuthVerification');
 
 
@@ -27,7 +28,7 @@ router.get('/ProductListByRemark/:Remark', ProductController.ProductListByRemark
 router.get('/ProductListBySimilar/:CategoryID', ProductController.ProductListBySimilar)
 router.get('/ProductListByKeyword/:Keyword', ProductController.ProductListByKeyword)
 router.get('/ProductDetails/:ProductID', ProductController.ProductDetails)
-router.get('/ProductReviewList/:ProductID', ProductController.ProductReviewList)
+router.get('/ProductReviewList/:productID', ProductController.ProductReviewList)
 
 
 // User
@@ -52,15 +53,23 @@ router.put('/UpdateCartList/:cartID', AuthVerification ,CartController.UpdateCar
 router.delete('/RemoveCartList', AuthVerification ,CartController.RemoveCartList)
 
 
-// Invoice & Payment
+// Invoice 
 router.get('/CreateInvoice', AuthVerification ,InvoiceController.CreateInvoice)
 router.get('/InvoiceList', AuthVerification ,InvoiceController.InvoiceList)
 router.get('/InvoiceProductList/:invoice_id', AuthVerification ,InvoiceController.InvoiceProductList)
 
-router.get('/PaymentSuccess/:trxID', InvoiceController.PaymentSuccess)
-router.get('/PaymentFail/:trxID', InvoiceController.PaymentFail)
-router.get('/PaymentCancel/:trxID', InvoiceController.PaymentCancel)
-router.get('/PaymentIPN/:trxID', InvoiceController.PaymentIPN)
+// Payment
+router.post('/PaymentSuccess/:trxID', InvoiceController.PaymentSuccess)
+router.post('/PaymentFail/:trxID', InvoiceController.PaymentFail)
+router.post('/PaymentCancel/:trxID', InvoiceController.PaymentCancel)
+router.post('/PaymentIPN/:trxID', InvoiceController.PaymentIPN)
+
+// Features
+router.get('/FeaturesList', AuthVerification ,FeaturesController.FeaturesList)
+
+// Review
+router.post('/CreateReview', AuthVerification , ProductController.CreateProductReview)
+
 
 
 

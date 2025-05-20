@@ -4,7 +4,7 @@ const DataSchema = mongoose.Schema(
   {
 
       store_id: { type: String, required: true },
-      store_password: { type: String, required: true },
+      store_passwd: { type: String, required: true },
       currency: { type: String, required: true },
       success_url: { type: String, required: true },
       fail_url: { type: String, required: true },
@@ -18,5 +18,5 @@ const DataSchema = mongoose.Schema(
   }
 );
 
-const PaymentSettingModel = mongoose.model("paymentSettings", DataSchema);
+const PaymentSettingModel = mongoose.model("paymentSettings", DataSchema, "paymentSettings");
 module.exports = PaymentSettingModel;

@@ -301,87 +301,143 @@ const ProductListBySimilarService = async (req) => {
 
 // Placeholder: Get product details
 const ProductDetailsService = async (req) => {
-    try {
-        const ProductID = new mongoose.Types.ObjectId(req.params.ProductID);
+  try {
+    const ProductID = new mongoose.Types.ObjectId(req.params.ProductID);
 
-        const MatchStage = { $match: { _id: ProductID } };
-        const JoinWithCategoryStage = {
-          $lookup: {
-            from: "categories",
-            localField: "categoryID",
-            foreignField: "_id",
-            as: "category",
-          },
-        };
-        const JoinWithBrandStage = {
-          $lookup: {
-            from: "brands",
-            localField: "brandID",
-            foreignField: "_id",
-            as: "brand",
-          },
-        };
-        const JoinWithDetailStage = {
-          $lookup: {
-            from: "productDetails",
-            localField: "_id",
-            foreignField: "productID",
-            as: "details",
-          },
-        };
-    
-        const UnwindBrandStage = {
-          $unwind: {
-            path: "$brand",
-            // preserveNullAndEmptyArrays: true
-          },
-        };
-    
-        const UnwindCategoryStage = {
-          $unwind: {
-            path: "$category",
-            // preserveNullAndEmptyArrays: true
-          },
-        };
-    
-        const UnwindDetailStage = {
-          $unwind: {
-            path: "$details",
-            // preserveNullAndEmptyArrays: true
-          },
-        };
-    
-        const ProjectoinStage = {
-          $project: {
-            "brand._id": 0,
-            "category._id": 0,
-            categoryID: 0,
-            brandID: 0,
-          },
-        };
-    
-        const data = await ProductModel.aggregate([
-          MatchStage,
-        //   LimitStage,
-          JoinWithCategoryStage,
-          JoinWithBrandStage,
-          JoinWithDetailStage,
-          UnwindBrandStage,
-          UnwindCategoryStage,
-          UnwindDetailStage,
-          ProjectoinStage,
-        ]);
-        return { status: "success", data: data };
-      } catch (error) {
-        return { status: "failed", data: error };
-      }
+    const MatchStage = { $match: { _id: ProductID } };
+    const JoinWithCategoryStage = {
+      $lookup: {
+        from: "categories",
+        localField: "categoryID",
+        foreignField: "_id",
+        as: "category",
+      },
+    };
+    const JoinWithBrandStage = {
+      $lookup: {
+        from: "brands",
+        localField: "brandID",
+        foreignField: "_id",
+        as: "brand",
+      },
+    };
+    const JoinWithDetailStage = {
+      $lookup: {
+        from: "productDetails",
+        localField: "_id",
+        foreignField: "productID",
+        as: "details",
+      },
+    };
+
+    const UnwindBrandStage = {
+      $unwind: {
+        path: "$brand",
+        // preserveNullAndEmptyArrays: true
+      },
+    };
+
+    const UnwindCategoryStage = {
+      $unwind: {
+        path: "$category",
+        // preserveNullAndEmptyArrays: true
+      },
+    };
+
+    const UnwindDetailStage = {
+      $unwind: {
+        path: "$details",
+        // preserveNullAndEmptyArrays: true
+      },
+    };
+
+    const ProjectoinStage = {
+      $project: {
+        "brand._id": 0,
+        "category._id": 0,
+        categoryID: 0,
+        brandID: 0,
+      },
+    };
+
+    const data = await ProductModel.aggregate([
+      MatchStage,
+      //   LimitStage,
+      JoinWithCategoryStage,
+      JoinWithBrandStage,
+      JoinWithDetailStage,
+      UnwindBrandStage,
+      UnwindCategoryStage,
+      UnwindDetailStage,
+      ProjectoinStage,
+    ]);
+    return { status: "success", data: data };
+  } catch (error) {
+    return { status: "failed", data: error };
+  }
 };
 
 // Placeholder: Get products by keyword
-const ProductListByKeywordService = async () => {};
+const ProductListByKeywordService = async () => { };
 
 // Placeholder: Get product reviews
-const ProductReviewListService = async () => {};
+const ProductReviewListService = async (req) => {
+  try {
+    const productID = new ObjectId(req.params.productID);
+    const MatchStage = { $match: { productID: productID } };
+
+    const JoinWithProfileStage = {
+      $lookup: {
+        from: "profiles",
+        localField: "userID",
+        foreignField: "userID",
+        as: "profile",
+      },
+    };
+
+    const UnwindProfileStage = {
+      $unwind: {
+        path: "$profile",
+      },
+    };
+
+    const ProjectionStage = {$project: {'des': 1, 'rating': 1, 'profile.cus_name': 1, }}
+
+    const data = await ReviewModel.aggregate([
+      MatchStage,
+      JoinWithProfileStage,
+      UnwindProfileStage,
+      ProjectionStage
+    ]);
+
+    // const data = await ReviewModel.find({productID: productID});
+
+    return { status: "success", data: data };
+
+  } catch (error) {
+    return { status: "failed", data: error };
+  }
+};
+
+const ProductReviewCreateService = async (req) => {
+  try {
+    const user_id = req.headers.user_id;
+    const reqBody = req.body;
+
+    const data = await ReviewModel.create({
+      productID: reqBody.productID,
+      userID: user_id,
+      des: reqBody.des,
+      rating: reqBody.rating,
+    })
+
+    return { status: "success", data: data };
+  } catch (error) {
+    return { status: "failed", data: error };
+  }
+}
+
+
 
 module.exports = {
   ProductBrandListService,
@@ -395,4 +451,5 @@ module.exports = {
   ProductListByRemarkService,
   ProductDetailsService,
   ProductReviewListService,
+  ProductReviewCreateService
 };
