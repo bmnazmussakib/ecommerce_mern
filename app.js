@@ -72,12 +72,15 @@ app.get("/", (req, res) => {
 app.use("/api/v1", router);
 
 
-// app.use(express.static('client/dist'))
-// React Frontend Routing
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
-// });
+app.use(express.static(path.join(__dirname, "client", "dist")));
 
-// console.log((path.resolve(__dirname, "client", "dist", "index.html")))
+// React Frontend Routing
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
+});
+
+
+// console.log("Resolved index.html path:", path.resolve(__dirname, "client", "dist", "index.html"));
+
 
 module.exports = app;

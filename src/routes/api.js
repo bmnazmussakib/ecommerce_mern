@@ -16,7 +16,7 @@ router.get('/hello', HelloController.Hello)
 
 
 // Products Routes
-router.get('/ProductBrandList', AuthVerification , ProductController.ProductBrandList)
+router.get('/ProductBrandList', ProductController.ProductBrandList)
 router.get('/ProductCategoryList', ProductController.ProductCategoryList)
 router.get('/ProductList', ProductController.ProductList)
 router.get('/ProductSliderList', ProductController.ProductSliderList)
