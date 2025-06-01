@@ -8,6 +8,7 @@ const ProductDetailModel = require("../models/ProductDetailModel");
 const ProductSliderModel = require("../models/ProductSliderModel");
 const ReviewModel = require("../models/ReviewModel");
 
+
 // Get all brands
 const ProductBrandListService = async () => {
   try {
@@ -51,11 +52,12 @@ const ProductSliderListService = async () => {
 // Get products by brand
 const ProductListByBrandService = async (req) => {
   try {
-    const BrandID = new mongoose.Types.ObjectId(req.params.BrandID);
-
+    const BrandID = new ObjectId(req.params.BrandID);
+    
     const MatchStage = {
       $match: { brandID: BrandID },
     };
+    console.log("Received BrandID:", req.params.BrandID);
 
     const JoinWithBrandStage = {
       $lookup: {
@@ -109,8 +111,12 @@ const ProductListByBrandService = async (req) => {
     ]);
 
     // const data = await ProductModel.find({ brandID: BrandID });
-    console.log(BrandID);
-    return { status: "success", data: data };
+
+    const test = await ProductModel.find({ brandID: BrandID });
+console.log("Matched Products:", test);
+
+
+    return { status: "success", data: test };
   } catch (error) {
     return { status: "failed", data: error };
   }

@@ -9,8 +9,7 @@ const CategoriesSkeleton = () => {
             <div className="container">
                 <div className="row">
                     <h1 className="headline-4 text-center my-2 p-0">Top Categories</h1>
-                    <span className="bodySmal mb-5 text-center">Explore a World of Choices Across Our Most Popular <br
-                    />Shopping Categories </span>
+                    <span className="bodySmal mb-5 text-center">Explore a World of Choices Across Our Most Popular <br/>Shopping Categories </span>
                     {
                         Array.from({ length: 8 }).map(() => {
                             return (

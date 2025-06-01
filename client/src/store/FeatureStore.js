@@ -6,8 +6,9 @@ const FeatureStore = create((set) => ({
     FeatureListRequest: async () => {
         try {
             const res = await axios.get(`/api/v1/FeaturesList`)
-            if (res.data.status === 'success') {
-                set({ FeatureList: res.data.data })
+            
+            if (res?.data?.status === 'success') {
+                set({ FeatureList: res?.data?.data })
             }
         } catch (error) {
             console.error("Error fetching FeatureList:", error)

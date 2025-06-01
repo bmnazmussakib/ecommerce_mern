@@ -7,7 +7,7 @@ import ProductsSekeleton from '../skeleton/ProductsSekeleton'
 import BrandsSkeleton from '../skeleton/BrandsSkeleton'
 
 import ProductStore from '../store/ProductStore'
-// import FeatureStore from '../store/FeatureStore'
+import FeatureStore from '../store/FeatureStore'
 
 import Slider from '../components/product/Slider'
 import Features from '../components/features/Features'
@@ -19,22 +19,22 @@ const HomePage = () => {
 
   const {
     SliderListRequest,
-    // BrandListRequest,
-    // CategoryListRequest,
-    // ListByRemarkRequest,
+    BrandListRequest,
+    CategoryListRequest,
+    ListByRemarkRequest,
   } = ProductStore()
 
-  // const { FeatureListRequest } = FeatureStore()
+  const { FeatureListRequest } = FeatureStore()
 
   useEffect(() => {
     (async () => {
-      
-      await SliderListRequest();
-      // await BrandListRequest();
-      // await CategoryListRequest();
-      // await ListByRemarkRequest("new");
 
-      // await FeatureListRequest();
+      await SliderListRequest();
+      await BrandListRequest();
+      await CategoryListRequest();
+      await ListByRemarkRequest("new");
+      
+      await FeatureListRequest();
     })()
   }, [])
 

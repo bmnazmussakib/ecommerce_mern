@@ -65,7 +65,7 @@ router.post('/PaymentCancel/:trxID', InvoiceController.PaymentCancel)
 router.post('/PaymentIPN/:trxID', InvoiceController.PaymentIPN)
 
 // Features
-router.get('/FeaturesList', AuthVerification ,FeaturesController.FeaturesList)
+router.get('/FeaturesList', FeaturesController.FeaturesList)
 
 // Review
 router.post('/CreateReview', AuthVerification , ProductController.CreateProductReview)
