@@ -53,7 +53,7 @@ const ProductSliderListService = async () => {
 const ProductListByBrandService = async (req) => {
   try {
     const BrandID = new ObjectId(req.params.BrandID);
-    
+
     const MatchStage = {
       $match: { brandID: BrandID },
     };
@@ -112,11 +112,11 @@ const ProductListByBrandService = async (req) => {
 
     // const data = await ProductModel.find({ brandID: BrandID });
 
-    const test = await ProductModel.find({ brandID: BrandID });
-console.log("Matched Products:", test);
+    // const test = await ProductModel.find({ brandID: BrandID });
+    // console.log("Matched Products:", test);
 
 
-    return { status: "success", data: test };
+    return { status: "success", data: data };
   } catch (error) {
     return { status: "failed", data: error };
   }
@@ -384,7 +384,124 @@ const ProductDetailsService = async (req) => {
 };
 
 // Placeholder: Get products by keyword
-const ProductListByKeywordService = async () => { };
+const ProductListByKeywordService = async (req) => {
+  try {
+    let SearchRegex = { "$regex": req.params.Keyword, "$options": "i" }
+    let SearchParams = [{ title: SearchRegex }, { shortDes: SearchRegex }]
+    let SearchQuery = { $or: SearchParams }
+
+    let MatchStage = { $match: SearchQuery }
+
+    let JoinWithBrandStage = { $lookup: { from: "brands", localField: "brandID", foreignField: "_id", as: "brand" } };
+    let JoinWithCategoryStage = { $lookup: { from: "categories", localField: "categoryID", foreignField: "_id", as: "category" } };
+    let UnwindBrandStage = { $unwind: "$brand" }
+    let UnwindCategoryStage = { $unwind: "$category" }
+    let ProjectionStage = { $project: { 'brand._id': 0, 'category._id': 0, 'categoryID': 0, 'brandID': 0 } }
+
+    let data = await ProductModel.aggregate([
+      MatchStage, JoinWithBrandStage, JoinWithCategoryStage,
+      UnwindBrandStage, UnwindCategoryStage, ProjectionStage
+    ])
+    return { status: "success", data: data }
+  } catch (e) {
+    return { status: "fail", data: e }.toString()
+  }
+};
+
+// Placeholder: Get products by filter
+const ProductListByFilterService = async (req) => {
+  try {
+    const { brandID, categoryID, priceMin, priceMax } = req.body;
+
+    const matchConditions = {};
+
+    // Filter only if brandID is a non-empty string
+    if (brandID && brandID !== '') {
+      matchConditions['brand._id'] = new mongoose.Types.ObjectId(brandID);
+    }
+
+    // Filter only if categoryID is a non-empty string
+    if (categoryID && categoryID !== '') {
+      matchConditions['category._id'] = new mongoose.Types.ObjectId(categoryID);
+    }
+
+    // Convert priceMin and priceMax to numbers only if they're valid
+    const min = parseFloat(priceMin);
+    const max = parseFloat(priceMax);
+
+    const isMinValid = !isNaN(min) && min > 0;
+    const isMaxValid = !isNaN(max) && max > 0;
+
+    if (isMinValid || isMaxValid) {
+      matchConditions['price'] = {};
+      if (isMinValid) matchConditions['price'].$gte = min;
+      if (isMaxValid) matchConditions['price'].$lte = max;
+    }
+
+    // Lookup and unwind stages
+    const brandLookupStage = {
+      $lookup: {
+        from: 'brands',
+        localField: 'brandID',
+        foreignField: '_id',
+        as: 'brand',
+      },
+    };
+    const brandUnwindStage = { $unwind: '$brand' };
+
+    const categoryLookupStage = {
+      $lookup: {
+        from: 'categories',
+        localField: 'categoryID',
+        foreignField: '_id',
+        as: 'category',
+      },
+    };
+    const categoryUnwindStage = { $unwind: '$category' };
+
+    // Final match stage
+    const matchStage = { $match: matchConditions };
+
+    // Project selected fields
+    const projectStage = {
+      $project: {
+        _id: 1,
+        title: 1,
+        shortDes: 1,
+        price: 1,
+        discount: 1,
+        discountPrice: 1,
+        image: 1,
+        star: 1,
+        stock: 1,
+        remark: 1,
+        brand: {
+          _id: '$brand._id',
+          brandName: '$brand.brandName',
+        },
+        category: {
+          _id: '$category._id',
+          categoryName: '$category.categoryName',
+        },
+      },
+    };
+
+    // Run aggregation
+    const data = await ProductModel.aggregate([
+      brandLookupStage,
+      brandUnwindStage,
+      categoryLookupStage,
+      categoryUnwindStage,
+      matchStage,
+      projectStage,
+    ]);
+
+    return { status: 'success', data };
+  } catch (error) {
+    return { status: 'fail', data: error.toString() };
+  }
+};
+
 
 // Placeholder: Get product reviews
 const ProductReviewListService = async (req) => {
@@ -407,7 +524,7 @@ const ProductReviewListService = async (req) => {
       },
     };
 
-    const ProjectionStage = {$project: {'des': 1, 'rating': 1, 'profile.cus_name': 1, }}
+    const ProjectionStage = { $project: { 'des': 1, 'rating': 1, 'profile.cus_name': 1, } }
 
     const data = await ReviewModel.aggregate([
       MatchStage,
@@ -457,5 +574,6 @@ module.exports = {
   ProductListByRemarkService,
   ProductDetailsService,
   ProductReviewListService,
-  ProductReviewCreateService
+  ProductReviewCreateService,
+  ProductListByFilterService
 };

@@ -49,6 +49,74 @@ const ProductStore = create((set) => ({
             console.error(`Error fetching products by remark (${remark}):`, error)
         }
     },
+
+    ListByBrand: null,
+    ListByBrandRequest: async (brand) => {
+        try {
+            const res = await axios.get(`/api/v1/ProductListByBrand/${brand}`)
+            if (res.data.status === 'success') {
+                set({ ListByBrand: res.data.data })
+            }
+        } catch (error) {
+            console.error(`Error fetching products by brand (${brand}):`, error)
+        }
+    },
+
+    ListByCategory: null,
+    ListByCategoryRequest: async (category) => {
+        try {
+            const res = await axios.get(`/api/v1/ProductListByCategory/${category}`)
+            if (res.data.status === 'success') {
+                set({ ListByCategory: res.data.data })
+            }
+        } catch (error) {
+            console.error(`Error fetching products by category (${category}):`, error)
+        }
+    },
+
+    ListBySimilar: null,
+    ListBySimilarRequest: async (category) => {
+        try {
+            const res = await axios.get(`/api/v1/ProductListBySimilar/${category}`)
+            if (res.data.status === 'success') {
+                set({ ListBySimilar: res.data.data })
+            }
+        } catch (error) {
+            console.error(`Error fetching products by similar (${category}):`, error)
+        }
+    },
+
+    ListByKeyword: null,
+    ListByKeywordRequest: async (keyword) => {
+        try {
+            const res = await axios.get(`/api/v1/ProductListByKeyword/${keyword}`)
+            if (res.data.status === 'success') {
+                set({ ListByKeyword: res.data.data })
+            }
+        } catch (error) {
+            console.error(`Error fetching products by keyword (${keyword}):`, error)
+        }
+    },
+
+    ListByFilter: null,
+    ListByFilterRequest: async (postBody) => {
+        try {
+            // set({ ListByFilter: null })
+            console.log('postBody: ', postBody)
+            const res = await axios.post(`/api/v1/ProductListByFilter`, postBody)
+            console.log(res.data)
+            if (res.data.status === 'success') {
+                set({ ListByFilter: res.data.data })
+            }
+        } catch (error) {
+            console.error(`Error fetching products by Filter (${postBody}):`, error)
+        }
+    },
+
+    SearchKeyword: null,
+    setSearchKeyword: async (keyword) => {
+        set({ SearchKeyword: keyword })
+    }
 }))
 
 export default ProductStore

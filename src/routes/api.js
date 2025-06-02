@@ -30,6 +30,8 @@ router.get('/ProductListByKeyword/:Keyword', ProductController.ProductListByKeyw
 router.get('/ProductDetails/:ProductID', ProductController.ProductDetails)
 router.get('/ProductReviewList/:productID', ProductController.ProductReviewList)
 
+router.post('/ProductListByFilter', ProductController.ProductListByFilter)
+
 
 // User
 router.get('/UserOTP/:email', UserController.UserOTP)

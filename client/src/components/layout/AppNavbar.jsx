@@ -1,8 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import logo from '../../assets/images/plainb-logo.svg'
+import ProductStore from '../../store/ProductStore';
 
 const AppNavbar = () => {
+
+  const { SearchKeyword, setSearchKeyword } = ProductStore()
+
+  // console.log('SearchKeyword: ', SearchKeyword)
+
   return (
     <>
       <div className="container-fluid text-white p-2 bg-success">
@@ -62,15 +68,13 @@ const AppNavbar = () => {
           </div>
           <div className=" d-lg-flex">
             <div className="input-group">
-              <input className="form-control" type="search" placeholder="Search" aria-label="Search"
-              />
-              <button className="btn btn-outline-dark" type="submit">
+              <input value={SearchKeyword} onChange={(e)=>setSearchKeyword(e.target.value)} className="form-control" type="search" placeholder="Search" aria-label="Search" />
+              <Link to={`/by-keyword/${SearchKeyword}`} className="btn btn-outline-dark" type="submit">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor" style={{ width: 24, height: 24 }}>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 
-            7 7 0 0114 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-              </button>
+              </Link>
             </div>
             <Link to="/cart" type="button" className="btn ms-2 btn-light position-relative">
               <i className="bi text-dark bi-bag">

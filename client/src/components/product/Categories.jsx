@@ -1,6 +1,7 @@
 import React from 'react'
 import ProductStore from '../../store/ProductStore'
 import CategoriesSkeleton from '../../skeleton/CategoriesSkeleton'
+import { Link } from 'react-router-dom'
 
 const Categories = () => {
 
@@ -21,13 +22,15 @@ const Categories = () => {
               CategoryList?.map((item, index) => {
                 return (
                   <div className="col-6 col-lg-8r text-center col-md-8r p-2" key={index}>
-                    <div className="card h-100 rounded-3 bg-white">
-                      <div className="card-body">
+                    <Link to={`/by-category/${item?._id}`} className="text-decoration-none">
+                      <div className="card h-100 rounded-3 bg-white">
+                        <div className="card-body">
 
-                        <img alt="" className="w-75" src={item?.categoryImg} />
-                        <p className="bodySmal mt-3">{item?.categoryName}</p>
+                          <img alt="" className="w-75" src={item?.categoryImg} />
+                          <p className="bodySmal mt-3">{item?.categoryName}</p>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   </div>
                 )
               })
