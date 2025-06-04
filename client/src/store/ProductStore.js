@@ -53,6 +53,7 @@ const ProductStore = create((set) => ({
     ListByBrand: null,
     ListByBrandRequest: async (brand) => {
         try {
+            set({ ListByFilter: null })
             const res = await axios.get(`/api/v1/ProductListByBrand/${brand}`)
             if (res.data.status === 'success') {
                 set({ ListByBrand: res.data.data })
@@ -101,10 +102,10 @@ const ProductStore = create((set) => ({
     ListByFilter: null,
     ListByFilterRequest: async (postBody) => {
         try {
-            // set({ ListByFilter: null })
+            set({ ListByFilter: null })
             console.log('postBody: ', postBody)
             const res = await axios.post(`/api/v1/ProductListByFilter`, postBody)
-            console.log(res.data)
+            // console.log(res.data)
             if (res.data.status === 'success') {
                 set({ ListByFilter: res.data.data })
             }
@@ -112,11 +113,36 @@ const ProductStore = create((set) => ({
             console.error(`Error fetching products by Filter (${postBody}):`, error)
         }
     },
+    resetListByFilter: () => set({ ListByFilter: null }),
 
     SearchKeyword: null,
     setSearchKeyword: async (keyword) => {
         set({ SearchKeyword: keyword })
-    }
+    },
+    
+    Details: null,
+    DetailsRequest: async (id) => {
+        try {
+            const res = await axios.get(`/api/v1/ProductDetails/${id}`)
+            if (res.data.status === 'success') {
+                set({ Details: res.data.data })
+            }
+        } catch (error) {
+            console.error(`Error fetching products by Details (${id}):`, error)
+        }
+    },
+    
+    ReviewList: null,
+    ReviewListRequest: async (id) => {
+        try {
+            const res = await axios.get(`/api/v1/ProductReviewList/${id}`)
+            if (res.data.status === 'success') {
+                set({ ReviewList: res.data.data })
+            }
+        } catch (error) {
+            console.error(`Error fetching products by Review List (${id}):`, error)
+        }
+    },
 }))
 
 export default ProductStore

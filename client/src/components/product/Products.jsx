@@ -18,7 +18,7 @@ const Products = () => {
           <h1 className="headline-4 text-center my-2 p-0">Our Products</h1>
           <span className="bodySmal mb-3 text-center">Explore a World of Choices Across Our Most Popular</span>
           <div className="col-12">
-            
+
 
             <div>
               <ul className="nav nav-pills p-3 justify-content-center mb-3" id="pills-tab" role="tablist">
@@ -116,7 +116,7 @@ const Products = () => {
                             ListByRemark.map((item, index) => {
                               return (
                                 <div className="col-md-3 p-2 col-lg-3 col-sm-6 col-12" key={index}>
-                                  <Link to="" className="card shadow-sm h-100 rounded-3 bg-white">
+                                  <Link to={`/details/${item?._id}`} className="card shadow-sm h-100 rounded-3 bg-white">
                                     <img className="w-100 rounded-top-2" src={item?.image} />
                                     <div className="card-body">
                                       <p className="bodySmal text-secondary my-1">{item?.title}</p>

@@ -4,7 +4,7 @@ import Layout from '../components/layout/Layout'
 import ProductStore from '../store/ProductStore'
 import { useParams } from 'react-router-dom'
 
-const ProductByKeyword = () => {
+const ProductByKeywordPage = () => {
 
   const { ListByKeyword, ListByKeywordRequest } = ProductStore()
   const { keyword } = useParams()
@@ -28,4 +28,4 @@ const ProductByKeyword = () => {
   )
 }
 
-export default ProductByKeyword
+export default ProductByKeywordPage

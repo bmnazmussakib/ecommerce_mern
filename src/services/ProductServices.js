@@ -411,96 +411,68 @@ const ProductListByKeywordService = async (req) => {
 // Placeholder: Get products by filter
 const ProductListByFilterService = async (req) => {
   try {
-    const { brandID, categoryID, priceMin, priceMax } = req.body;
-
-    const matchConditions = {};
-
-    // Filter only if brandID is a non-empty string
-    if (brandID && brandID !== '') {
-      matchConditions['brand._id'] = new mongoose.Types.ObjectId(brandID);
+    let matchConditions = {};
+    if (req.body['categoryID']) {
+      matchConditions.categoryID = new ObjectId(req.body['categoryID']);
     }
-
-    // Filter only if categoryID is a non-empty string
-    if (categoryID && categoryID !== '') {
-      matchConditions['category._id'] = new mongoose.Types.ObjectId(categoryID);
+    if (req.body['brandID']) {
+      matchConditions.brandID = new ObjectId(req.body['brandID']);
     }
+    let MatchStage = { $match: matchConditions };
 
-    // Convert priceMin and priceMax to numbers only if they're valid
-    const min = parseFloat(priceMin);
-    const max = parseFloat(priceMax);
-
-    const isMinValid = !isNaN(min) && min > 0;
-    const isMaxValid = !isNaN(max) && max > 0;
-
-    if (isMinValid || isMaxValid) {
-      matchConditions['price'] = {};
-      if (isMinValid) matchConditions['price'].$gte = min;
-      if (isMaxValid) matchConditions['price'].$lte = max;
-    }
-
-    // Lookup and unwind stages
-    const brandLookupStage = {
-      $lookup: {
-        from: 'brands',
-        localField: 'brandID',
-        foreignField: '_id',
-        as: 'brand',
-      },
+    let AddFieldsStage = {
+      $addFields: { numericPrice: { $toInt: "$price" } }
     };
-    const brandUnwindStage = { $unwind: '$brand' };
 
-    const categoryLookupStage = {
-      $lookup: {
-        from: 'categories',
-        localField: 'categoryID',
-        foreignField: '_id',
-        as: 'category',
-      },
+    let priceMin = parseInt(req.body['priceMin']);
+    let priceMax = parseInt(req.body['priceMax']);
+    let PriceMatchConditions = {};
+    if (!isNaN(priceMin)) {
+      PriceMatchConditions['numericPrice'] = { $gte: priceMin };
+    }
+    if (!isNaN(priceMax)) {
+      PriceMatchConditions['numericPrice'] = {
+        ...(PriceMatchConditions['numericPrice'] || {}),
+        $lte: priceMax
+      };
+    }
+    let PriceMatchStage = { $match: PriceMatchConditions };
+
+    let JoinWithBrandStage = {
+      $lookup: { from: "brands", localField: "brandID", foreignField: "_id", as: "brand" }
     };
-    const categoryUnwindStage = { $unwind: '$category' };
+    let JoinWithCategoryStage = {
+      $lookup: { from: "categories", localField: "categoryID", foreignField: "_id", as: "category" }
+    };
+    let UnwindBrandStage = { $unwind: "$brand" };
+    let UnwindCategoryStage = { $unwind: "$category" };
 
-    // Final match stage
-    const matchStage = { $match: matchConditions };
-
-    // Project selected fields
-    const projectStage = {
+    let ProjectionStage = {
       $project: {
-        _id: 1,
-        title: 1,
-        shortDes: 1,
-        price: 1,
-        discount: 1,
-        discountPrice: 1,
-        image: 1,
-        star: 1,
-        stock: 1,
-        remark: 1,
-        brand: {
-          _id: '$brand._id',
-          brandName: '$brand.brandName',
-        },
-        category: {
-          _id: '$category._id',
-          categoryName: '$category.categoryName',
-        },
-      },
+        'brand._id': 0,
+        'category._id': 0,
+        'categoryID': 0,
+        'brandID': 0
+      }
     };
 
-    // Run aggregation
-    const data = await ProductModel.aggregate([
-      brandLookupStage,
-      brandUnwindStage,
-      categoryLookupStage,
-      categoryUnwindStage,
-      matchStage,
-      projectStage,
+    let data = await ProductModel.aggregate([
+      MatchStage,
+      AddFieldsStage,
+      PriceMatchStage,
+      JoinWithBrandStage,
+      JoinWithCategoryStage,
+      UnwindBrandStage,
+      UnwindCategoryStage,
+      ProjectionStage
     ]);
 
-    return { status: 'success', data };
-  } catch (error) {
-    return { status: 'fail', data: error.toString() };
+    return { status: "success", data: data };
+  } catch (e) {
+    return { status: "fail", data: e.toString() };
   }
 };
+
 
 
 // Placeholder: Get product reviews

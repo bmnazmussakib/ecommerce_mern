@@ -4,15 +4,15 @@ import Layout from '../components/layout/Layout'
 import ProductStore from '../store/ProductStore'
 import { useParams } from 'react-router-dom'
 
-const ProductByCategory = () => {
+const ProductByBrandPage = () => {
 
-  const { ListByCategoryRequest, ListByCategory } = ProductStore()
+  const { ListByBrandRequest, ListByBrand } = ProductStore()
   const { id } = useParams()
 
   useEffect(() => {
     (async () => {
       try {
-        await ListByCategoryRequest(id)
+        await ListByBrandRequest(id)
       } catch (error) {
         console.error('Error fetching product by brand:', error);
       }
@@ -22,10 +22,10 @@ const ProductByCategory = () => {
   return (
     <>
       <Layout>
-        <ProductList data={ListByCategory} />
+        <ProductList data={ListByBrand} />
       </Layout>
     </>
   )
 }
 
-export default ProductByCategory
+export default ProductByBrandPage
